@@ -22,11 +22,11 @@ class App extends Component {
     filledForm: false,
     messages: [],
     value: "",
-    name: "",
-    room: "test",
+    name: "aytike",
+    room: "tamik",
   };
 
-  client = new W3CWebSocket("ws://127.0.0.1:8000/ws/" + this.state.room + "/");
+  client = new W3CWebSocket("ws://kutai.kg:8080/ws/" + this.state.room + "/");
 
 
 
@@ -45,7 +45,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch('http://127.0.0.1:8000/message/?format=json').then(
+    fetch('http://kutai.kg:8080/message/?format=json').then(
         value => value.json().then(data => {
           this.setState((state) => ({
             ...state,
