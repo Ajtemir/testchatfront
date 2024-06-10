@@ -18,6 +18,7 @@ const useStyles = (theme) => ({
 });
 
 class App extends Component {
+  host = 'kutai.kg';
   state = {
     filledForm: false,
     messages: [],
@@ -26,7 +27,7 @@ class App extends Component {
     room: "tamik",
   };
 
-  client = new W3CWebSocket("ws://kutai.kg:8080/ws/" + this.state.room + "/");
+  client = new W3CWebSocket(`ws://${this.host}:8080/ws/` + this.state.room + "/");
 
 
 
@@ -45,7 +46,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch('http://kutai.kg:8080/message/?format=json').then(
+    fetch(`http://${this.host}:8080/message/?format=json`).then(
         value => value.json().then(data => {
           this.setState((state) => ({
             ...state,
