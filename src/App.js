@@ -19,15 +19,24 @@ const useStyles = (theme) => ({
 
 class App extends Component {
   host = 'kutai.kg';
+  port = '8888';
+  // socketPort = '8001';
+  socketPort = '8888';
   state = {
     filledForm: false,
     messages: [],
     value: "",
-    name: "aytike",
-    room: "tamik",
+    sender: "1",
+    drug: "1",
+    receiver: "2",
   };
 
-  client = new W3CWebSocket(`ws://${this.host}:8080/ws/` + this.state.room + "/");
+  get_room = () => `${this.state.drug}_${this.state.sender > this.state.receiver 
+      ? `${this.state.receiver}_${this.state.sender}`
+      : `${this.state.sender}_${this.state.receiver}`
+  }`;
+
+  client = new W3CWebSocket(`ws://${this.host}:${this.socketPort}/ws/` + this.get_room() + "/");
 
 
 
@@ -36,9 +45,10 @@ class App extends Component {
     this.client.send(
         JSON.stringify({
           type: "message",
-          text: this.state.value,
-          sender: this.state.name,
-          receiver: this.state.room,
+          message: this.state.value,
+          sender_id: this.state.sender,
+          receiver_id: this.state.receiver,
+          drug_id: this.state.drug,
         })
     );
     this.state.value = "";
@@ -46,13 +56,13 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch(`http://${this.host}:8080/message/?format=json`).then(
+    fetch(`http://${this.host}:${this.port}/api/v1/message?drug_id=${this.state.drug}&receiver_id=${this.state.receiver}&sender_id=${this.state.sender}&format=json`).then(
         value => value.json().then(data => {
           this.setState((state) => ({
             ...state,
             messages: data.messages.map(i =>( {
-              msg: i.message,
-              name: i.user_from,
+              msg: i.text,
+              name: i.sender,
             }))
           }))
         })
@@ -82,7 +92,7 @@ class App extends Component {
         <Container component="main" maxWidth="xs">
           {this.state.filledForm ? (
               <div style={{ marginTop: 50 }}>
-                Room Name: {this.state.room}
+                Room Name: {this.get_room()}
                 <Paper
                     style={{height: 500, maxHeight: 500, overflow: "auto", boxShadow: "none", }}
                 >
@@ -128,22 +138,32 @@ class App extends Component {
                       noValidate
                       onSubmit={(value) => this.setState({ filledForm: true })}
                   >
-                    <TextField variant="outlined" margin="normal" required fullWidth label="Room name"
-                               name="Room name"
+                    <TextField variant="outlined" margin="normal" required fullWidth label="Drug"
+                               name="Drug"
                                autoFocus
-                               value={this.state.room}
+                               value={this.state.drug}
                                onChange={(e) => {
-                                 this.setState({ room: e.target.value });
-                                 this.value = this.state.room;
+                                 this.setState({ drug: e.target.value });
+                                 this.value = this.state.drug;
                                }}
                     />
                     <TextField variant="outlined" margin="normal" required fullWidth name="sender" label="sender"
                                type="sender"
                                id="sender"
-                               value={this.state.name}
+                               value={this.state.sender}
                                onChange={(e) => {
-                                 this.setState({ name: e.target.value });
-                                 this.value = this.state.name;
+                                 this.setState({ sender: e.target.value });
+                                 this.value = this.state.sender;
+                               }}
+                    />
+
+                    <TextField variant="outlined" margin="normal" required fullWidth name="receiver" label="receiver"
+                               type="receiver"
+                               id="receiver"
+                               value={this.state.receiver}
+                               onChange={(e) => {
+                                 this.setState({ receiver: e.target.value });
+                                 this.value = this.state.receiver;
                                }}
                     />
                     <Button
