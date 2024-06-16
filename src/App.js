@@ -32,7 +32,7 @@ class App extends Component {
     value: "",
     sender: "1788",
     drug: "2562",
-    receiver: "1788",
+    receiver: "1799",
   };
 
   get_room = () => `${this.state.drug}_${this.state.sender > this.state.receiver 
