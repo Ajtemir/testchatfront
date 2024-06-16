@@ -20,15 +20,19 @@ const useStyles = (theme) => ({
 class App extends Component {
   host = 'kutai.kg';
   port = '8888';
-  // socketPort = '8001';
   socketPort = '8888';
+
+  // host = 'localhost';
+  // port = '8000';
+  // socketPort = '8001';
+
   state = {
     filledForm: false,
     messages: [],
     value: "",
-    sender: "1",
-    drug: "1",
-    receiver: "2",
+    sender: "1788",
+    drug: "2562",
+    receiver: "1788",
   };
 
   get_room = () => `${this.state.drug}_${this.state.sender > this.state.receiver 
