@@ -18,9 +18,10 @@ const useStyles = (theme) => ({
 });
 
 class App extends Component {
+
   host = 'kutai.kg';
-  port = '8888';
-  socketPort = '8888';
+  port = '80';
+  socketPort = '80';
 
   // host = 'localhost';
   // port = '8000';
@@ -30,15 +31,17 @@ class App extends Component {
     filledForm: false,
     messages: [],
     value: "",
-    sender: "1788",
-    drug: "2562",
-    receiver: "1799",
+    sender: "1799",
+    drug: new URLSearchParams(window.location.search).get('order_id'),
+    receiver: new URLSearchParams(window.location.search).get('buyer_id'),
   };
 
-  get_room = () => `${this.state.drug}_${this.state.sender > this.state.receiver 
-      ? `${this.state.receiver}_${this.state.sender}`
-      : `${this.state.sender}_${this.state.receiver}`
-  }`;
+  get_room = () => this.state.drug;
+  //     `${this.state.drug}_${this.state.sender > this.state.receiver
+  //     ? `${this.state.receiver}_${this.state.sender}`
+  //     : `${this.state.sender}_${this.state.receiver}`
+  // }`
+  ;
 
   client = new W3CWebSocket(`ws://${this.host}:${this.socketPort}/ws/` + this.get_room() + "/");
 
@@ -52,7 +55,7 @@ class App extends Component {
           message: this.state.value,
           sender_id: this.state.sender,
           receiver_id: this.state.receiver,
-          drug_id: this.state.drug,
+          order_id: this.state.drug,
         })
     );
     this.state.value = "";
@@ -60,7 +63,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    fetch(`http://${this.host}:${this.port}/api/v1/message?drug_id=${this.state.drug}&receiver_id=${this.state.receiver}&sender_id=${this.state.sender}&format=json`).then(
+    fetch(`http://${this.host}:${this.port}/api/v1/message?order_id=${this.state.drug}&receiver_id=${this.state.receiver}&sender_id=${this.state.sender}&format=json`).then(
         value => value.json().then(data => {
           this.setState((state) => ({
             ...state,
@@ -94,16 +97,16 @@ class App extends Component {
     const { classes } = this.props;
     return (
         <Container component="main" maxWidth="xs">
-          {this.state.filledForm ? (
-              <div style={{ marginTop: 50 }}>
+          {(
+              <div style={{marginTop: 50}}>
                 Room Name: {this.get_room()}
                 <Paper
-                    style={{height: 500, maxHeight: 500, overflow: "auto", boxShadow: "none", }}
+                    style={{height: 500, maxHeight: 500, overflow: "auto", boxShadow: "none",}}
                 >
                   {this.state.messages.map((message) => (
                       <>
                         <Card className={classes.root}>
-                          <CardHeader title={message.name} subheader={message.msg} />
+                          <CardHeader title={message.name} subheader={message.msg}/>
                         </Card>
                       </>
                   ))}
@@ -118,7 +121,7 @@ class App extends Component {
                              value={this.state.value}
                              fullWidth
                              onChange={(e) => {
-                               this.setState({ value: e.target.value });
+                               this.setState({value: e.target.value});
                                this.value = this.state.value;
                              }}
                   />
@@ -132,55 +135,6 @@ class App extends Component {
                     Send Message
                   </Button>
                 </form>
-              </div>
-          ) : (
-              <div>
-                <CssBaseline />
-                <div className={classes.paper}>
-                  <form
-                      className={classes.form}
-                      noValidate
-                      onSubmit={(value) => this.setState({ filledForm: true })}
-                  >
-                    <TextField variant="outlined" margin="normal" required fullWidth label="Drug"
-                               name="Drug"
-                               autoFocus
-                               value={this.state.drug}
-                               onChange={(e) => {
-                                 this.setState({ drug: e.target.value });
-                                 this.value = this.state.drug;
-                               }}
-                    />
-                    <TextField variant="outlined" margin="normal" required fullWidth name="sender" label="sender"
-                               type="sender"
-                               id="sender"
-                               value={this.state.sender}
-                               onChange={(e) => {
-                                 this.setState({ sender: e.target.value });
-                                 this.value = this.state.sender;
-                               }}
-                    />
-
-                    <TextField variant="outlined" margin="normal" required fullWidth name="receiver" label="receiver"
-                               type="receiver"
-                               id="receiver"
-                               value={this.state.receiver}
-                               onChange={(e) => {
-                                 this.setState({ receiver: e.target.value });
-                                 this.value = this.state.receiver;
-                               }}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                      Submit
-                    </Button>
-                  </form>
-                </div>
               </div>
           )}
         </Container>
