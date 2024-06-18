@@ -85,7 +85,7 @@ class App extends Component {
             ...state.messages,
             {
               msg: dataFromServer.text,
-              name: dataFromServer.sender,
+              name: dataFromServer.sender === 1799 ? 'менеджер' : 'клиент',
             },
           ],
         }));
@@ -99,7 +99,7 @@ class App extends Component {
         <Container component="main" maxWidth="xs">
           {(
               <div style={{marginTop: 50}}>
-                Room Name: {this.get_room()}
+                ID заказа: {this.get_room()}
                 <Paper
                     style={{height: 500, maxHeight: 500, overflow: "auto", boxShadow: "none",}}
                 >
@@ -116,7 +116,7 @@ class App extends Component {
                     noValidate
                     onSubmit={this.onButtonClicked}
                 >
-                  <TextField id="outlined-helperText" label="Write text" defaultValue="Default Value"
+                  <TextField id="outlined-helperText" label="Напишите сообщение" defaultValue="Default Value"
                              variant="outlined"
                              value={this.state.value}
                              fullWidth
@@ -132,7 +132,7 @@ class App extends Component {
                       color="primary"
                       className={classes.submit}
                   >
-                    Send Message
+                    Отправить сообщение
                   </Button>
                 </form>
               </div>
