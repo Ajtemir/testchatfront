@@ -69,7 +69,7 @@ class App extends Component {
             ...state,
             messages: data.messages.map(i =>( {
               msg: i.text,
-              name: i.sender,
+              name: i.sender  === 1799 ? 'менеджер' : 'клиент',
             }))
           }))
         })
@@ -85,7 +85,7 @@ class App extends Component {
             ...state.messages,
             {
               msg: dataFromServer.text,
-              name: dataFromServer.sender === 1799 ? 'менеджер' : 'клиент',
+              name: dataFromServer.sender === '1799' ? 'менеджер' : 'клиент',
             },
           ],
         }));
