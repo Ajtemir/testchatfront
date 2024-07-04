@@ -34,6 +34,7 @@ class App extends Component {
     sender: "1799",
     drug: new URLSearchParams(window.location.search).get('order_id'),
     receiver: new URLSearchParams(window.location.search).get('buyer_id'),
+    order_code: new URLSearchParams(window.location.search).get('order_code'),
   };
 
   get_room = () => this.state.drug;
@@ -99,7 +100,7 @@ class App extends Component {
         <Container component="main" maxWidth="xs">
           {(
               <div style={{marginTop: 50}}>
-                ID заказа: {this.get_room()}
+                ID заказа: {this.state.order_code}
                 <Paper
                     style={{height: 500, maxHeight: 500, overflow: "auto", boxShadow: "none",}}
                 >
